@@ -1,0 +1,2 @@
+C:\Users\Chris Baroni\Documents\UnityWorkspace\Knights-Trial\obj\Debug\Assembly-CSharp.csprojAssemblyReference.cache
+C:\Users\Chris Baroni\Documents\UnityWorkspace\Knights-Trial\obj\Debug\Assembly-CSharp.csproj.CoreCompileInputs.cache

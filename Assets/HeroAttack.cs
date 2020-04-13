@@ -4,37 +4,56 @@ using UnityEngine;
 
 public class HeroAttack : MonoBehaviour
 {
-    public float attackTime;
-    public float startTimeAttack;
+    //public Animator animator;
 
-    public Transform attackLocation;
-    public float attackRange;
-    public LayerMask enemies;
-    // Start is called before the first frame update
-    void Start()
+    public Transform attackPoint;
+    public LayerMask enemyLayers;
+
+    public float attackRange = 0.5f;
+    public int attackDamage = 5;
+
+    public float attackRate = 2f;
+    private float nextAttackTime = 0f;
+
+    public AudioClip swingSound;
+    AudioSource audioSource;
+
+    private void Start()
     {
-        
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (attackTime <= 0)
+        if(Time.time >= nextAttackTime)
         {
-            if (Input.GetButton("Fire1"))
+            if (Input.GetKeyDown(KeyCode.F))
             {
-                Collider2D[] damage = Physics2D.OverlapCircleAll(attackLocation.position, attackRange, enemies);
-
-                for (int i = 0; i < damage.Length; i++)
-                {
-                    Destroy(damage[i].gameObject);
-                }
+                Attack();
+                nextAttackTime = Time.time + 1f / attackRate;
             }
-            attackTime = startTimeAttack;
         }
-        else
+    }
+
+    void Attack()
+    {
+        //animator.SetTrigger("Attack");
+
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
+        audioSource.PlayOneShot(swingSound, 0.7f);
+        foreach( Collider2D enemy in hitEnemies)
         {
-            attackTime -= Time.deltaTime;
+            Debug.Log("Enemy hit!");
+            enemy.GetComponent<EnemyController>().TakeDamage(attackDamage);
         }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (attackPoint == null)
+            return;
+
+        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
     }
 }
